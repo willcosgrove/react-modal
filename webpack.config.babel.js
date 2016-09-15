@@ -1,5 +1,6 @@
 import path from 'path';
 import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 module.exports = {
   entry: {
@@ -8,14 +9,19 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '__build__'),
     publicPath: '/__build__/',
-    filename: 'bundle.js'
+    filename: 'bundle.[hash].js'
   },
   devtool: 'inline-source-map',
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
-      filename: 'common.js'
+      filename: 'common.[hash].js'
     }),
+    new HtmlWebpackPlugin({
+      filename: '../index.html',
+      template: './app/index_template.ejs',
+      title: 'React Modal'
+    })
   ],
   resolve: {
     extensions: ['', '.js', '.jsx']
