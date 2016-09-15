@@ -2,13 +2,13 @@ import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-module.exports = {
+const webpackConfig = {
   entry: {
     index: './app/index'
   },
   output: {
     path: path.resolve(__dirname, '__build__'),
-    publicPath: '/__build__/',
+    publicPath: '__build__/',
     filename: 'bundle.[hash].js'
   },
   devtool: 'inline-source-map',
@@ -21,6 +21,9 @@ module.exports = {
       filename: '../index.html',
       template: './app/index_template.ejs',
       title: 'React Modal'
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
     })
   ],
   resolve: {
@@ -40,3 +43,10 @@ module.exports = {
     ]
   }
 };
+
+if (process.env.NODE_ENV === 'production') {
+  config.plugins.push(new webpack.optimize.DedupePlugin());
+  config.plugins.push(new webpack.optimize.OccurrenceOrderPlugin(true));
+}
+
+module.exports = webpackConfig
